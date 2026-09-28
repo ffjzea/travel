@@ -1,0 +1,174 @@
+<div class="page">
+  <header class="hero">
+    <span class="hero__badge">沖繩家族旅行 · 4 大 1 小</span>
+    <h1>北谷 ⇄ 國際通 五天四夜</h1>
+    <p class="hero__dates">
+      {{ dateLabel(days[0]) }} — {{ dateLabel(days[days.length - 1]) }}
+    </p>
+
+    @switch (tripStatus()) {
+      @case ('before') {
+        <p class="hero__status">✈️ 距離出發還有 {{ daysToGo() }} 天</p>
+      }
+      @case ('during') {
+        <p class="hero__status hero__status--live">🎉 今天是第 {{ todayIndex + 1 }} 天</p>
+      }
+      @case ('after') {
+        <p class="hero__status">行程已結束，回味一下 ✨</p>
+      }
+    }
+  </header>
+
+  <nav
+    class="tabs"
+    role="tablist"
+    aria-label="行程天數"
+    [style.grid-template-columns]="'repeat(' + days.length + ', minmax(0, 1fr))'"
+  >
+    @for (day of days; track day.id) {
+      <button
+        type="button"
+        class="tab"
+        role="tab"
+        [class.is-active]="day.id === activeId()"
+        [attr.aria-selected]="day.id === activeId()"
+        (click)="select(day.id)"
+      >
+        <span class="tab__day">Day {{ day.id }}</span>
+        <span class="tab__date">{{ shortDate(day) }}</span>
+        @if (isToday(day)) {
+          <span class="tab__today">今天</span>
+        }
+      </button>
+    }
+  </nav>
+
+  <main class="content">
+    <section class="day-head">
+      <h2>{{ activeDay().title }}</h2>
+      <div class="chips">
+        <span class="chip">📅 {{ dateLabel(activeDay()) }}</span>
+        <span class="chip">📍 {{ activeDay().area }}</span>
+        @if (activeDay().stay !== '—') {
+          <span class="chip">🏨 {{ activeDay().stay }}</span>
+        }
+      </div>
+
+      <div class="day-nav">
+        <button type="button" (click)="step(-1)" [disabled]="isFirst()">← 前一天</button>
+        @if (hasToday && !isToday(activeDay())) {
+          <button type="button" class="day-nav__today" (click)="goToToday()">回到今天</button>
+        }
+        <button type="button" (click)="step(1)" [disabled]="isLast()">後一天 →</button>
+      </div>
+    </section>
+
+    <h3 class="section-title">行程</h3>
+    <ol class="timeline">
+      @for (entry of activeDay().entries; track $index) {
+        <li class="tl-item" [attr.data-kind]="entry.kind">
+          <div class="tl-time">{{ entry.time || '—' }}</div>
+          <div class="tl-rail">
+            <span class="tl-dot">{{ icons[entry.kind] }}</span>
+          </div>
+          <div class="tl-body">
+            <h4>{{ entry.title }}</h4>
+            @if (entry.detail) {
+              <p class="tl-detail">{{ entry.detail }}</p>
+            }
+
+            @if (entry.links?.length) {
+              <div class="links">
+                @for (l of entry.links; track l.url) {
+                  <a [href]="l.url" target="_blank" rel="noopener noreferrer">🔗 {{ l.label }}</a>
+                }
+              </div>
+            }
+
+            @if (entry.photos?.length) {
+              <div class="photos">
+                @for (p of entry.photos; track p.src) {
+                  <figure class="photo">
+                    <img
+                      [src]="p.src"
+                      [alt]="p.caption"
+                      loading="lazy"
+                      (click)="openPhoto(p)"
+                    />
+                    <figcaption>{{ p.caption }}</figcaption>
+                  </figure>
+                }
+              </div>
+            }
+          </div>
+        </li>
+      }
+    </ol>
+
+    @if (activeDay().refs.length) {
+      <h3 class="section-title">參考資訊</h3>
+      <div class="refs">
+        @for (ref of activeDay().refs; track ref.title) {
+          <details class="ref" open>
+            <summary>{{ ref.title }}</summary>
+            <div class="ref__body">
+              @if (ref.rows?.length) {
+                <dl class="kv">
+                  @for (r of ref.rows; track r.k) {
+                    <div class="kv__row">
+                      <dt>{{ r.k }}</dt>
+                      <dd>{{ r.v }}</dd>
+                    </div>
+                  }
+                </dl>
+              }
+
+              @if (ref.bullets?.length) {
+                <ul class="bullets">
+                  @for (b of ref.bullets; track b) {
+                    <li>{{ b }}</li>
+                  }
+                </ul>
+              }
+
+              @if (ref.links?.length) {
+                <div class="links">
+                  @for (l of ref.links; track l.url) {
+                    <a [href]="l.url" target="_blank" rel="noopener noreferrer">🔗 {{ l.label }}</a>
+                  }
+                </div>
+              }
+
+              @if (ref.photos?.length) {
+                <div class="photos">
+                  @for (p of ref.photos; track p.src) {
+                    <figure class="photo">
+                      <img
+                        [src]="p.src"
+                        [alt]="p.caption"
+                        loading="lazy"
+                        (click)="openPhoto(p)"
+                      />
+                      <figcaption>{{ p.caption }}</figcaption>
+                    </figure>
+                  }
+                </div>
+              }
+            </div>
+          </details>
+        }
+      </div>
+    }
+  </main>
+
+  <footer class="footer">
+    <p>點圖片可放大 · 可用網址 <code>?day=2</code> 直接開啟指定天數</p>
+  </footer>
+</div>
+
+@if (lightbox(); as lb) {
+  <div class="lightbox" role="dialog" aria-modal="true" (click)="closePhoto()">
+    <img [src]="lb.src" [alt]="lb.caption" />
+    <p>{{ lb.caption }}</p>
+  </div>
+}
