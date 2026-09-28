@@ -1,0 +1,10 @@
+{
+  // Cloudflare Pages 設定（純靜態 SSG，無 SSR／Functions／R2）
+  //   本機預覽：npm run preview
+  //   直接部署：npm run deploy
+  //   Git 整合：Build command = npm run build，輸出目錄同 pages_build_output_dir
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "okinawa-trip",
+  "pages_build_output_dir": "dist/okinawa-trip/browser",
+  "compatibility_date": "2026-09-28"
+}
