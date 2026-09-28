@@ -4,24 +4,48 @@
 
 ## 功能
 
+**行程頁（`/`）**
+
 - **每日一個 tab**（Day 1–5）＋ 一個 **✈️ 機場資訊** tab，快速切換
 - **依今天日期自動預設 tab**：旅程中打開會自動跳到當天，並顯示「今天」徽章
 - **搭車資訊**：每天列出上下車位置、轉乘方式，附 Google Maps 導航連結
 - **參考資訊**：交通比較、時刻表、票價、住宿、餐廳、出入境流程
 - **原檔截圖**：7 張時刻表／地圖／站牌照片，點擊可放大
 - **深層連結**：`?day=2`、`?day=airport`
-- 無外部 CDN／字型，旅途中沒網路也能開
+
+**行李清單頁（`/packing`）**
+
+- 11 個分類、約 90 項的可打勾清單
+- 進度條與各分類完成數
+- 勾選狀態存在瀏覽器 `localStorage`，不會上傳
+- 「手提 vs 託運」規定與沖繩特別提醒
+
+兩頁都不依賴外部 CDN／字型，旅途中沒網路也能開。
+
+## 路由
+
+| 路徑 | 頁面 |
+|---|---|
+| `/` | 行程表（可用 `?day=1`～`?day=5`、`?day=airport`） |
+| `/packing` | 行李打包清單 |
+| 其他 | 導回 `/` |
+
+`public/_redirects` 已設定 SPA fallback（`/*  /index.html  200`），Cloudflare Pages 上直接開 `/packing` 不會 404。
 
 ## 目錄結構
 
 ```
-src/app/trip-data.ts   ← 行程內容、日期、搭車資訊（改這裡就好）
-src/app/app.ts         ← tab 切換與「今天」判斷邏輯
-src/app/app.html       ← 版型
-src/styles.css         ← 樣式（設計 token 都在最上面）
-public/images/         ← 時刻表／地圖截圖
-public/_headers        ← Cloudflare Pages 快取設定
-wrangler.jsonc         ← Cloudflare Pages 設定
+src/app/trip-data.ts        ← 行程內容、日期、搭車資訊（改這裡就好）
+src/app/packing-data.ts     ← 行李清單內容
+src/app/app.routes.ts       ← 路由
+src/app/pages/trip/         ← 行程頁
+src/app/pages/packing/      ← 行李清單頁
+src/styles.css              ← 樣式（設計 token 都在最上面）
+public/images/              ← 時刻表／地圖截圖
+public/_headers             ← Cloudflare Pages 快取設定
+public/_redirects           ← SPA fallback
+wrangler.jsonc              ← Cloudflare Pages 設定
+PACKING.md                  ← 行李清單的純文字備忘錄版
 ```
 
 ## 修改行程
@@ -33,6 +57,8 @@ wrangler.jsonc         ← Cloudflare Pages 設定
 - `DAYS[].transit` — 當天的搭車資訊
 - `DAYS[].refs` — 當天的參考資訊
 - `AIRPORT_GUIDE` — 機場 tab 的內容
+
+行李清單改 `src/app/packing-data.ts`。勾選狀態的 id 由「分類 + 品項名稱」組成，所以調換順序不會影響已勾選的項目。
 
 ## 本機開發
 
@@ -104,6 +130,8 @@ npm run preview    # wrangler pages dev dist/okinawa-trip/browser
 - 開啟首頁 → 標題為「沖繩家族旅行 · 五天四夜行程」
 - 切換到 **✈️ 機場** tab → 應顯示樓層導覽
 - 網址加上 `?day=3` → 應直接開啟第三天
+- 開啟 `/packing` → 應顯示行李清單（若 404 表示 `_redirects` 沒生效）
+- 在行李清單勾選幾項後重新整理 → 勾選狀態應保留
 
 ## 常用指令
 

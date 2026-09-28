@@ -93,8 +93,16 @@ img {
   opacity: 0.9;
 }
 
+.hero__status-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
 .hero__status {
-  margin: 12px 0 0;
+  margin: 0;
   font-size: 14px;
   font-weight: 600;
 }
@@ -104,6 +112,72 @@ img {
   background: var(--coral);
   border-radius: 999px;
   padding: 4px 14px;
+}
+
+.hero__link,
+.hero__btn {
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-decoration: none;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 999px;
+  padding: 4px 13px;
+  white-space: nowrap;
+}
+
+.hero__link {
+  margin-left: auto;
+}
+
+.hero__link:hover,
+.hero__btn:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+.hero__btn {
+  cursor: pointer;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.hero__actions .hero__link {
+  margin-left: 0;
+}
+
+/* 打包進度 */
+
+.progress {
+  margin-top: 14px;
+}
+
+.progress__bar {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+  overflow: hidden;
+}
+
+.progress__bar span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #7dd3fc, #fbbf24);
+  transition: width 0.25s ease;
+}
+
+.progress__text {
+  margin: 7px 0 0;
+  font-size: 12.5px;
+  opacity: 0.95;
 }
 
 /* ---------------- Tabs ---------------- */
@@ -597,6 +671,68 @@ img {
   --role: #f59e0b;
 }
 
+/* ---------------- Packing list (行李清單) ---------------- */
+
+.pack {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.pack__item {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.pack__item label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 13px;
+  cursor: pointer;
+}
+
+.pack__item input {
+  flex: 0 0 auto;
+  width: 19px;
+  height: 19px;
+  margin: 2px 0 0;
+  accent-color: var(--sea);
+  cursor: pointer;
+}
+
+.pack__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.pack__label {
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+.pack__note {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.pack__item.is-done {
+  background: #f2faf6;
+  border-color: #cdeadf;
+}
+
+.pack__item.is-done .pack__label {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
 /* ---------------- Footer ---------------- */
 
 .footer {
@@ -611,6 +747,15 @@ img {
   border: 1px solid var(--line);
   border-radius: 6px;
   padding: 1px 6px;
+}
+
+.footer__links {
+  margin-top: 8px;
+}
+
+.footer__links a {
+  font-weight: 700;
+  text-decoration: none;
 }
 
 /* ---------------- Lightbox ---------------- */

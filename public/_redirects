@@ -1,0 +1,4 @@
+/* Cloudflare Pages：SPA fallback
+   沒有實際檔案的路径（例如 /packing）改由 index.html 回應，
+   讓 Angular 前端路由接手。 */
+/*    /index.html   200

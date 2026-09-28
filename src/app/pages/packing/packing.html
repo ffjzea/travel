@@ -1,0 +1,80 @@
+<div class="page">
+  <header class="hero">
+    <span class="hero__badge">沖繩家族旅行 · 4 大 1 小</span>
+    <h1>🧳 行李打包清單</h1>
+    <p class="hero__dates">2026/10/05 – 10/09 ｜ 勾選狀態自動存在這台裝置</p>
+
+    <div class="progress">
+      <div class="progress__bar"><span [style.width.%]="percent()"></span></div>
+      <p class="progress__text">
+        已打包 {{ checkedCount() }} / {{ total }} 項（{{ percent() }}%）
+        @if (allDone()) {
+          <strong>　全部完成 🎉</strong>
+        }
+      </p>
+    </div>
+
+    <div class="hero__actions">
+      <a class="hero__link" routerLink="/">← 回行程</a>
+      <button type="button" class="hero__btn" (click)="checkAll()">全部勾選</button>
+      <button type="button" class="hero__btn" (click)="clearAll()">全部清除</button>
+    </div>
+  </header>
+
+  <main class="content">
+    <h3 class="section-title">⚠️ 手提 vs 託運</h3>
+    <div class="ref ref--plain">
+      <div class="ref__body">
+        <dl class="kv">
+          @for (r of rules; track r.label) {
+            <div class="kv__row">
+              <dt>{{ r.label }}</dt>
+              <dd>{{ r.value }}</dd>
+            </div>
+          }
+        </dl>
+      </div>
+    </div>
+
+    @for (g of groups; track g.id) {
+      <h3 class="section-title">
+        {{ g.icon }} {{ g.title }}（{{ groupChecked(g.id) }}/{{ g.items.length }}）
+      </h3>
+      <ul class="pack">
+        @for (item of g.items; track item.id) {
+          <li class="pack__item" [class.is-done]="isChecked(item.id)">
+            <label>
+              <input
+                type="checkbox"
+                [checked]="isChecked(item.id)"
+                (change)="toggle(item.id)"
+              />
+              <span class="pack__text">
+                <span class="pack__label">{{ item.label }}</span>
+                @if (item.note) {
+                  <span class="pack__note">{{ item.note }}</span>
+                }
+              </span>
+            </label>
+          </li>
+        }
+      </ul>
+    }
+
+    <h3 class="section-title">🌺 沖繩特別提醒</h3>
+    <div class="ref ref--plain">
+      <div class="ref__body">
+        <ul class="bullets">
+          @for (t of tips; track t) {
+            <li>{{ t }}</li>
+          }
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p><a routerLink="/">← 回到行程表</a></p>
+    <p>勾選狀態只存在這台裝置的瀏覽器，不會上傳。</p>
+  </footer>
+</div>
