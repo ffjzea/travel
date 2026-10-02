@@ -841,6 +841,44 @@ img {
   margin-top: 2px;
 }
 
+/* 餐廳：餐點名稱與單價 */
+.ctable__items {
+  list-style: none;
+  margin: 7px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.ctable__items li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: baseline;
+  padding-left: 9px;
+  border-left: 2px solid var(--sea-soft);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.ctable__item-text {
+  min-width: 0;
+}
+
+.ctable__item-note {
+  color: var(--muted);
+  font-size: 11.5px;
+  margin-left: 4px;
+  white-space: nowrap;
+}
+
+.ctable__item-price {
+  font-weight: 700;
+  color: var(--sea-deep);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
 .ctable__total td {
   background: #f4fafc;
   font-weight: 800;

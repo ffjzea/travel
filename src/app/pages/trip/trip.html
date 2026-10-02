@@ -238,6 +238,21 @@
                     @if (r.detail) {
                       <span class="ctable__detail">{{ r.detail }}</span>
                     }
+                    @if (r.items?.length) {
+                      <ul class="ctable__items">
+                        @for (it of r.items; track it.name) {
+                          <li>
+                            <span class="ctable__item-text">
+                              {{ it.name }}
+                              @if (it.note) {
+                                <span class="ctable__item-note">{{ it.note }}</span>
+                              }
+                            </span>
+                            <span class="ctable__item-price">¥{{ num(it.jpy) }}</span>
+                          </li>
+                        }
+                      </ul>
+                    }
                   </td>
                   <td class="num" data-label="日幣">{{ r.jpy === 0 ? '免費' : '¥' + num(r.jpy) }}</td>
                   <td class="num" data-label="台幣">
