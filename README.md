@@ -6,13 +6,14 @@
 
 **行程頁（`/`）**
 
-- **每日一個 tab**（Day 1–5）＋ **✈️ 機場資訊** 與 **🌐 中英日對照** 兩個資訊 tab
+- **每日一個 tab**（Day 1–5）＋ **✈️ 機場資訊**、**🌐 中英日對照**、**💰 花費估算** 三個資訊 tab
 - **依今天日期自動預設 tab**：旅程中打開會自動跳到當天，並顯示「今天」徽章
 - **搭車資訊**：每天列出上下車位置、轉乘方式，附 Google Maps 導航連結
 - **中英日對照表**：重要地點（住宿／交通／景點／餐廳／購物）三語對照，每列都有地圖連結，可直接拿給司機或店員看；另附實用短句
+- **花費估算**：依菜單與票價估算 Day 1–5 的餐飲、門票、交通費用，同時顯示日幣與台幣，附每日小計與總計
 - **參考資訊**：交通比較、時刻表、票價、住宿、餐廳、出入境流程
 - **原檔截圖**：7 張時刻表／地圖／站牌照片，點擊可放大
-- **深層連結**：`?day=2`、`?day=airport`、`?day=places`
+- **深層連結**：`?day=2`、`?day=airport`、`?day=places`、`?day=cost`
 
 **行李清單頁（`/packing`）**
 
@@ -27,7 +28,7 @@
 
 | 路徑 | 頁面 |
 |---|---|
-| `/` | 行程表（可用 `?day=1`～`?day=5`、`?day=airport`、`?day=places`） |
+| `/` | 行程表（可用 `?day=1`～`?day=5`、`?day=airport`、`?day=places`、`?day=cost`） |
 | `/packing` | 行李打包清單 |
 | 其他 | 導回 `/` |
 
@@ -38,6 +39,7 @@
 ```
 src/app/trip-data.ts        ← 行程內容、日期、搭車資訊（改這裡就好）
 src/app/places-data.ts      ← 中英日對照表（地點與短句）
+src/app/cost-data.ts        ← 花費估算（每日項目、匯率、價位依據）
 src/app/packing-data.ts     ← 行李清單內容
 src/app/app.routes.ts       ← 路由
 src/app/pages/trip/         ← 行程頁
@@ -61,6 +63,8 @@ PACKING.md                  ← 行李清單的純文字備忘錄版
 - `AIRPORT_GUIDE` — 機場 tab 的內容
 
 中英日對照表改 `src/app/places-data.ts`（`PLACE_GROUPS` 為地點、`PHRASES` 為短句）。
+
+花費估算改 `src/app/cost-data.ts`（`COST_DAYS` 為每日項目、`JPY_TO_TWD` 為匯率、`MENU_REFS` 為價位依據）。台幣金額由日幣乘上匯率即時計算，改匯率不用重算表格。
 
 行李清單改 `src/app/packing-data.ts`。勾選狀態的 id 由「分類 + 品項名稱」組成，所以調換順序不會影響已勾選的項目。
 

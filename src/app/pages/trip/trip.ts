@@ -1,5 +1,6 @@
 import { Component, computed, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { COST_DAYS, COST_NOTES, CostDay, CostKind, JPY_TO_TWD, MENU_REFS } from '../../cost-data';
 import { PHRASES, PLACE_GROUPS } from '../../places-data';
 import {
   AIRPORT_GUIDE,
@@ -13,7 +14,7 @@ import {
 } from '../../trip-data';
 
 /** tab 識別：數字代表第幾天，其餘為資訊頁 */
-export type TabId = number | 'airport' | 'places';
+export type TabId = number | 'airport' | 'places' | 'cost';
 
 /** 取本地時區的 YYYY-MM-DD（避免 toISOString 的 UTC 偏移問題） */
 function toISODate(d: Date): string {
@@ -40,6 +41,10 @@ export class TripPage {
   readonly airport = AIRPORT_GUIDE;
   readonly placeGroups = PLACE_GROUPS;
   readonly phrases = PHRASES;
+  readonly costDays = COST_DAYS;
+  readonly menuRefs = MENU_REFS;
+  readonly costNotes = COST_NOTES;
+  readonly jpyToTwd = JPY_TO_TWD;
 
   /** 今天的日期（本地時區） */
   readonly todayISO = toISODate(new Date());
@@ -54,6 +59,8 @@ export class TripPage {
 
   readonly isPlaces = computed(() => this.activeTab() === 'places');
 
+  readonly isCost = computed(() => this.activeTab() === 'cost');
+
   readonly activeDay = computed<DayPlan>(
     () => DAYS.find((d) => d.id === this.activeTab()) ?? DAYS[0],
   );
@@ -61,16 +68,55 @@ export class TripPage {
   /** 目前要顯示的參考資訊區塊 */
   readonly activeRefs = computed<RefBlock[]>(() => {
     if (this.isAirport()) return this.airport.refs;
-    if (this.isPlaces()) return [];
+    if (this.isPlaces() || this.isCost()) return [];
     return this.activeDay().refs;
   });
 
   /** 目前要顯示的搭車資訊 */
   readonly activeTransit = computed<TransitStop[]>(() => {
     if (this.isAirport()) return this.airport.transit;
-    if (this.isPlaces()) return [];
+    if (this.isPlaces() || this.isCost()) return [];
     return this.activeDay().transit;
   });
+
+  /* ---------------- 花費估算 ---------------- */
+
+  readonly costKindIcon: Record<CostKind, string> = {
+    food: '🍽️',
+    ticket: '🎫',
+    transport: '🚌',
+    other: '🧾',
+  };
+
+  /** 全部項目的分類小計 */
+  readonly costTotals = computed(() => {
+    const all = COST_DAYS.flatMap((d) => d.rows);
+    const sum = (kind?: CostKind): number =>
+      all.filter((r) => !kind || r.kind === kind).reduce((n, r) => n + r.jpy, 0);
+    return {
+      food: sum('food'),
+      ticket: sum('ticket'),
+      transport: sum('transport'),
+      other: sum('other'),
+      total: sum(),
+    };
+  });
+
+  /** 平均每人（4 大 1 小 = 5 人） */
+  readonly costPerPerson = computed(() => Math.round(this.costTotals().total / 5));
+
+  dayTotal(day: CostDay): number {
+    return day.rows.reduce((n, r) => n + r.jpy, 0);
+  }
+
+  twd(jpy: number): number {
+    return Math.round(jpy * JPY_TO_TWD);
+  }
+
+  /** 千分位（固定 en-US，避免依瀏覽器語系變動） */
+  num(value: number): string {
+    return value.toLocaleString('en-US');
+  }
 
   mapUrl(query: string): string {
     return mapsUrl(query);
@@ -163,12 +209,12 @@ export class TripPage {
     return DAYS[0].id;
   }
 
-  /** 支援 ?day=2、?day=airport 或 ?day=places 直接開啟指定 tab（方便分享） */
+  /** 支援 ?day=2、?day=airport、?day=places 或 ?day=cost 直接開啟指定 tab */
   private tabFromUrl(): TabId | null {
     if (typeof window === 'undefined') return null;
     const raw = new URLSearchParams(window.location.search).get('day');
     if (!raw) return null;
-    if (raw === 'airport' || raw === 'places') return raw;
+    if (raw === 'airport' || raw === 'places' || raw === 'cost') return raw;
     const id = Number(raw);
     return DAYS.some((d) => d.id === id) ? id : null;
   }
