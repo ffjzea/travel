@@ -1,0 +1,114 @@
+<div class="page">
+  <header class="hero">
+    <span class="hero__badge">沖繩家族旅行 · 4 大 1 小</span>
+    <h1>🛒 採買指南</h1>
+    <p class="hero__dates">便利商店必買 ｜ 每天的地點買什麼 ｜ 沖繩特產</p>
+
+    <div class="hero__actions">
+      <a class="hero__link" routerLink="/">← 回行程</a>
+      <a class="hero__link hero__link--ghost" routerLink="/" [queryParams]="{ day: 'cost' }">
+        💰 花費估算
+      </a>
+    </div>
+  </header>
+
+  <main class="content">
+    <h3 class="section-title">🏪 便利商店必買</h3>
+    <p class="shop-lead">
+      日本便利商店（7-ELEVEN／FamilyMart／LAWSON）幾乎什麼都有：早餐、宵夜、甜點、飲料、藥妝、伴手禮。
+      下方「日文名稱」可以直接拿給店員看或在貨架上找。
+    </p>
+
+    @for (g of convenience; track g.id) {
+      <div class="ref ref--plain shop-block">
+        <div class="ref__body">
+          <h4 class="shop-block__title">{{ g.icon }} {{ g.title }}</h4>
+          @if (g.note) {
+            <p class="shop-block__note">{{ g.note }}</p>
+          }
+          <ul class="shop-list">
+            @for (it of g.items; track it.ja) {
+              <li>
+                <span class="shop-list__text">
+                  <span class="shop-list__ja" lang="ja">{{ it.ja }}</span>
+                  <span class="shop-list__zh">{{ it.zh }}</span>
+                </span>
+                @if (it.price) {
+                  <span class="shop-list__price">{{ it.price }}</span>
+                }
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+    }
+
+    <h3 class="section-title">🗓️ 每日採買指南</h3>
+    <p class="shop-lead">每天行程會經過的地方，適合買什麼、有什麼特殊體驗。</p>
+
+    @for (d of dayShopping; track d.day) {
+      <div class="ref ref--plain shop-block">
+        <div class="ref__body">
+          <h4 class="shop-block__title">{{ d.icon }} Day {{ d.day }}・{{ d.place }}</h4>
+
+          <p class="shop-block__label">🛍️ 適合買</p>
+          <ul class="shop-list">
+            @for (it of d.buy; track it.ja) {
+              <li>
+                <span class="shop-list__text">
+                  <span class="shop-list__ja" lang="ja">{{ it.ja }}</span>
+                  <span class="shop-list__zh">{{ it.zh }}</span>
+                </span>
+                @if (it.price) {
+                  <span class="shop-list__price">{{ it.price }}</span>
+                }
+              </li>
+            }
+          </ul>
+
+          <p class="shop-block__label">✨ 特殊的事／體驗</p>
+          <ul class="bullets">
+            @for (s of d.special; track s) {
+              <li>{{ s }}</li>
+            }
+          </ul>
+        </div>
+      </div>
+    }
+
+    <h3 class="section-title">🎁 沖繩必買伴手禮</h3>
+    <div class="ref ref--plain shop-block">
+      <div class="ref__body">
+        <ul class="shop-list">
+          @for (it of souvenirs; track it.ja) {
+            <li>
+              <span class="shop-list__text">
+                <span class="shop-list__ja" lang="ja">{{ it.ja }}</span>
+                <span class="shop-list__zh">{{ it.zh }}</span>
+              </span>
+              @if (it.price) {
+                <span class="shop-list__price">{{ it.price }}</span>
+              }
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="section-title">💡 採買小提醒</h3>
+    <div class="ref ref--plain">
+      <div class="ref__body">
+        <ul class="bullets">
+          @for (t of tips; track t) {
+            <li>{{ t }}</li>
+          }
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p><a routerLink="/">← 回到行程表</a>　·　<a routerLink="/packing">🧳 行李清單</a></p>
+    <p>共 {{ totalItems }} 項採買資訊 · 價格為參考值，實際依各店公告為準。</p>
+  </footer>
+</div>

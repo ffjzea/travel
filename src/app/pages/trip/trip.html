@@ -183,8 +183,7 @@
           <span class="cost-summary__label">五天合計</span>
           <strong class="cost-summary__jpy">¥{{ num(costTotals().total) }}</strong>
           <span class="cost-summary__twd">≈ NT${{ num(twd(costTotals().total)) }}</span>
-        </div>
-        <dl class="cost-summary__grid">
+        </div>        <dl class="cost-summary__grid">
           <div>
             <dt>🍽️ 餐飲</dt>
             <dd>
@@ -218,6 +217,15 @@
           </div>
         </dl>
       </div>
+
+      <a class="cta-card" routerLink="/shopping">
+        <span class="cta-card__icon">🛒</span>
+        <span class="cta-card__text">
+          <strong>便利商店必買 ＆ 每日採買指南</strong>
+          <span>日本超商有什麼好買、每天的地點適合買什麼特產、有什麼特殊體驗</span>
+        </span>
+        <span class="cta-card__arrow">→</span>
+      </a>
 
       @for (d of costDays; track d.day) {
         <h3 class="section-title">Day {{ d.day }}・{{ d.title }}（¥{{ num(dayTotal(d)) }}）</h3>

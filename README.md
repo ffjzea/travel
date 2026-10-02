@@ -22,6 +22,13 @@
 - 勾選狀態存在瀏覽器 `localStorage`，不會上傳
 - 「手提 vs 託運」規定與沖繩特別提醒
 
+**採買指南頁（`/shopping`）**
+
+- 便利商店必買（7-ELEVEN／FamilyMart／LAWSON）：鹹食、甜點、飲料、沖繩限定、日用品、好用服務
+- 每日採買指南：Day 1–5 每天的地點適合買什麼、有什麼特殊體驗
+- 沖繩必買伴手禮與採買小提醒（免稅、液體限制、易碎品）
+- 由「💰 花費」tab 上方的卡片連結進入
+
 兩頁都不依賴外部 CDN／字型，旅途中沒網路也能開。
 
 ## 路由
@@ -30,6 +37,7 @@
 |---|---|
 | `/` | 行程表（可用 `?day=1`～`?day=5`、`?day=airport`、`?day=places`、`?day=cost`） |
 | `/packing` | 行李打包清單 |
+| `/shopping` | 採買指南（便利商店必買／每日採買／伴手禮） |
 | 其他 | 導回 `/` |
 
 `public/_redirects` 已設定 SPA fallback（`/*  /index.html  200`），Cloudflare Pages 上直接開 `/packing` 不會 404。
@@ -40,10 +48,12 @@
 src/app/trip-data.ts        ← 行程內容、日期、搭車資訊（改這裡就好）
 src/app/places-data.ts      ← 中英日對照表（地點與短句）
 src/app/cost-data.ts        ← 花費估算（每日項目、匯率、價位依據）
+src/app/shopping-data.ts    ← 採買指南（便利商店、每日採買、伴手禮）
 src/app/packing-data.ts     ← 行李清單內容
 src/app/app.routes.ts       ← 路由
 src/app/pages/trip/         ← 行程頁
 src/app/pages/packing/      ← 行李清單頁
+src/app/pages/shopping/     ← 採買指南頁
 src/styles.css              ← 樣式（設計 token 都在最上面）
 public/images/              ← 時刻表／地圖截圖
 public/_headers             ← Cloudflare Pages 快取設定
@@ -65,6 +75,8 @@ PACKING.md                  ← 行李清單的純文字備忘錄版
 中英日對照表改 `src/app/places-data.ts`（`PLACE_GROUPS` 為地點、`PHRASES` 為短句）。
 
 花費估算改 `src/app/cost-data.ts`（`COST_DAYS` 為每日項目、`JPY_TO_TWD` 為匯率、`MENU_REFS` 為價位依據）。台幣金額由日幣乘上匯率即時計算，改匯率不用重算表格。
+
+採買指南改 `src/app/shopping-data.ts`（`CONVENIENCE` 便利商店、`DAY_SHOPPING` 每日採買、`SOUVENIRS` 伴手禮、`SHOP_TIPS` 提醒）。
 
 行李清單改 `src/app/packing-data.ts`。勾選狀態的 id 由「分類 + 品項名稱」組成，所以調換順序不會影響已勾選的項目。
 

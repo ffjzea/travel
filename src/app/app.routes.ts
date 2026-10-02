@@ -11,5 +11,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/packing/packing').then((m) => m.PackingPage),
     title: '行李打包清單 · 沖繩家族旅行',
   },
+  {
+    path: 'shopping',
+    loadComponent: () => import('./pages/shopping/shopping').then((m) => m.ShoppingPage),
+    title: '採買指南 · 沖繩家族旅行',
+  },
   { path: '**', redirectTo: '' },
 ];
