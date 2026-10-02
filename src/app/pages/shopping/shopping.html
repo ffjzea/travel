@@ -15,8 +15,9 @@
   <main class="content">
     <h3 class="section-title">🏪 便利商店必買</h3>
     <p class="shop-lead">
-      日本便利商店（7-ELEVEN／FamilyMart／LAWSON）幾乎什麼都有：早餐、宵夜、甜點、飲料、藥妝、伴手禮。
-      下方「日文名稱」可以直接拿給店員看或在貨架上找。
+      日本便利商店幾乎什麼都有：早餐、宵夜、甜點、飲料、藥妝、伴手禮。三大連鎖分別是
+      <strong>7-ELEVEN（セブン-イレブン）</strong>、<strong>FamilyMart（ファミリーマート，全家）</strong>、<strong>LAWSON（ローソン，羅森）</strong>。
+      下方每筆都有「日文原名 → 中文翻譯」，可以直接拿給店員看或在貨架上對照。
     </p>
 
     @for (g of convenience; track g.id) {
@@ -32,6 +33,9 @@
                 <span class="shop-list__text">
                   <span class="shop-list__ja" lang="ja">{{ it.ja }}</span>
                   <span class="shop-list__zh">{{ it.zh }}</span>
+                  @if (it.note) {
+                    <span class="shop-list__note">{{ it.note }}</span>
+                  }
                 </span>
                 @if (it.price) {
                   <span class="shop-list__price">{{ it.price }}</span>
@@ -58,6 +62,9 @@
                 <span class="shop-list__text">
                   <span class="shop-list__ja" lang="ja">{{ it.ja }}</span>
                   <span class="shop-list__zh">{{ it.zh }}</span>
+                  @if (it.note) {
+                    <span class="shop-list__note">{{ it.note }}</span>
+                  }
                 </span>
                 @if (it.price) {
                   <span class="shop-list__price">{{ it.price }}</span>
@@ -85,6 +92,9 @@
               <span class="shop-list__text">
                 <span class="shop-list__ja" lang="ja">{{ it.ja }}</span>
                 <span class="shop-list__zh">{{ it.zh }}</span>
+                @if (it.note) {
+                  <span class="shop-list__note">{{ it.note }}</span>
+                }
               </span>
               @if (it.price) {
                 <span class="shop-list__price">{{ it.price }}</span>
