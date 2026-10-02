@@ -1,5 +1,6 @@
 import { Component, computed, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { PHRASES, PLACE_GROUPS } from '../../places-data';
 import {
   AIRPORT_GUIDE,
   DAYS,
@@ -11,8 +12,8 @@ import {
   mapsUrl,
 } from '../../trip-data';
 
-/** tab 識別：數字代表第幾天，'airport' 為機場資訊 */
-export type TabId = number | 'airport';
+/** tab 識別：數字代表第幾天，其餘為資訊頁 */
+export type TabId = number | 'airport' | 'places';
 
 /** 取本地時區的 YYYY-MM-DD（避免 toISOString 的 UTC 偏移問題） */
 function toISODate(d: Date): string {
@@ -37,6 +38,8 @@ const WEEKDAY = ['日', '一', '二', '三', '四', '五', '六'];
 export class TripPage {
   readonly days = DAYS;
   readonly airport = AIRPORT_GUIDE;
+  readonly placeGroups = PLACE_GROUPS;
+  readonly phrases = PHRASES;
 
   /** 今天的日期（本地時區） */
   readonly todayISO = toISODate(new Date());
@@ -49,19 +52,25 @@ export class TripPage {
 
   readonly isAirport = computed(() => this.activeTab() === 'airport');
 
+  readonly isPlaces = computed(() => this.activeTab() === 'places');
+
   readonly activeDay = computed<DayPlan>(
     () => DAYS.find((d) => d.id === this.activeTab()) ?? DAYS[0],
   );
 
   /** 目前要顯示的參考資訊區塊 */
-  readonly activeRefs = computed<RefBlock[]>(() =>
-    this.isAirport() ? this.airport.refs : this.activeDay().refs,
-  );
+  readonly activeRefs = computed<RefBlock[]>(() => {
+    if (this.isAirport()) return this.airport.refs;
+    if (this.isPlaces()) return [];
+    return this.activeDay().refs;
+  });
 
   /** 目前要顯示的搭車資訊 */
-  readonly activeTransit = computed<TransitStop[]>(() =>
-    this.isAirport() ? this.airport.transit : this.activeDay().transit,
-  );
+  readonly activeTransit = computed<TransitStop[]>(() => {
+    if (this.isAirport()) return this.airport.transit;
+    if (this.isPlaces()) return [];
+    return this.activeDay().transit;
+  });
 
   mapUrl(query: string): string {
     return mapsUrl(query);
@@ -81,8 +90,6 @@ export class TripPage {
   });
 
   readonly hasToday = this.todayIndex >= 0;
-
-  readonly tabCount = DAYS.length + 1;
 
   /** 圖片放大檢視 */
   readonly lightbox = signal<Photo | null>(null);
@@ -156,12 +163,12 @@ export class TripPage {
     return DAYS[0].id;
   }
 
-  /** 支援 ?day=2 或 ?day=airport 直接開啟指定 tab（方便分享） */
+  /** 支援 ?day=2、?day=airport 或 ?day=places 直接開啟指定 tab（方便分享） */
   private tabFromUrl(): TabId | null {
     if (typeof window === 'undefined') return null;
     const raw = new URLSearchParams(window.location.search).get('day');
     if (!raw) return null;
-    if (raw === 'airport') return 'airport';
+    if (raw === 'airport' || raw === 'places') return raw;
     const id = Number(raw);
     return DAYS.some((d) => d.id === id) ? id : null;
   }

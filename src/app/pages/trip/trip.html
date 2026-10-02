@@ -23,12 +23,7 @@
     </div>
   </header>
 
-  <nav
-    class="tabs"
-    role="tablist"
-    aria-label="行程天數"
-    [style.grid-template-columns]="'repeat(' + tabCount + ', minmax(0, 1fr))'"
-  >
+  <nav class="tabs" role="tablist" aria-label="行程天數">
     @for (day of days; track day.id) {
       <button
         type="button"
@@ -57,6 +52,18 @@
       <span class="tab__day">✈️ 機場</span>
       <span class="tab__date">資訊</span>
     </button>
+
+    <button
+      type="button"
+      class="tab tab--info"
+      role="tab"
+      [class.is-active]="isPlaces()"
+      [attr.aria-selected]="isPlaces()"
+      (click)="select('places')"
+    >
+      <span class="tab__day">🌐 對照</span>
+      <span class="tab__date">中英日</span>
+    </button>
   </nav>
 
   <main class="content">
@@ -82,6 +89,72 @@
             }
           </dl>
         </div>
+      </div>
+    } @else if (isPlaces()) {
+      <section class="day-head">
+        <h2>重要地點 中英日對照表</h2>
+        <div class="chips">
+          <span class="chip">🗣️ 可直接拿給司機、店員看</span>
+          <span class="chip">🗺️ 每列都有地圖連結</span>
+        </div>
+      </section>
+
+      @for (g of placeGroups; track g.id) {
+        <h3 class="section-title">{{ g.icon }} {{ g.title }}</h3>
+        <div class="table-wrap">
+          <table class="ltable">
+            <thead>
+              <tr>
+                <th>中文</th>
+                <th>English</th>
+                <th>日本語</th>
+                <th>地圖</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of g.rows; track row.zh) {
+                <tr>
+                  <td data-label="中文">{{ row.zh }}</td>
+                  <td data-label="English">{{ row.en }}</td>
+                  <td data-label="日本語" lang="ja">{{ row.ja }}</td>
+                  <td data-label="地圖">
+                    @if (row.query) {
+                      <a
+                        class="ltable__map"
+                        [href]="mapUrl(row.query)"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        >🗺️ 地圖</a
+                      >
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+      <h3 class="section-title">🗣️ 實用短句</h3>
+      <div class="table-wrap">
+        <table class="ltable">
+          <thead>
+            <tr>
+              <th>中文</th>
+              <th>English</th>
+              <th>日本語</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (p of phrases; track p.zh) {
+              <tr>
+                <td data-label="中文">{{ p.zh }}</td>
+                <td data-label="English">{{ p.en }}</td>
+                <td data-label="日本語" lang="ja">{{ p.ja }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
       </div>
     } @else {
       <section class="day-head">
@@ -230,7 +303,8 @@
 
   <footer class="footer">
     <p>
-      點圖片可放大 · 可用網址 <code>?day=2</code> 或 <code>?day=airport</code> 直接開啟指定頁面
+      點圖片可放大 · 可用網址 <code>?day=2</code>、<code>?day=airport</code> 或
+      <code>?day=places</code> 直接開啟指定頁面
     </p>
     <p class="footer__links">
       <a routerLink="/packing">🧳 行李打包清單</a>
